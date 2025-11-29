@@ -47,14 +47,15 @@ const Register = () => {
                 htmlFor="name"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Name (Optional)
+                Name
               </label>
               <input
                 id="name"
                 name="name"
                 type="text"
+                required
                 className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-black focus:border-black focus:z-10 sm:text-sm"
-                placeholder="Name (Optional)"
+                placeholder="Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
