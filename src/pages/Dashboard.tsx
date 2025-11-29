@@ -57,10 +57,10 @@ const Dashboard = () => {
     <div className="min-h-screen bg-white">
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <Logo size="md" />
+          <Logo size="md" animated />
           <div className="flex items-center space-x-6">
             <span className="text-gray-900 font-light">
-              Welcome, {user?.name || user?.email}
+              Hello, {user?.name || user?.email}
             </span>
             <button
               onClick={logout}
