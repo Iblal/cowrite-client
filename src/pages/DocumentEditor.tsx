@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -7,7 +7,7 @@ import api from "../api/axios";
 interface Document {
   id: string;
   title: string;
-  content?: any; // JSON content if available
+  content?: any;
   yjs_state_blob?: any;
 }
 
@@ -17,14 +17,13 @@ const DocumentEditor = () => {
   const [document, setDocument] = useState<Document | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [status, setStatus] = useState("Saved");
+  const isContentDirty = useRef(false);
+  const titleDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const editor = useEditor({
     extensions: [StarterKit],
-    content: "", // Initial content
-    onUpdate: () => {
-      // Handle updates, maybe auto-save in future
-      // const json = editor.getJSON();
-    },
+    content: "",
     editorProps: {
       attributes: {
         class:
@@ -32,6 +31,41 @@ const DocumentEditor = () => {
       },
     },
   });
+
+  // Save content when it changes
+  useEffect(() => {
+    if (!editor || !id) return;
+
+    let debounceTimer: ReturnType<typeof setTimeout>;
+
+    const saveContent = async () => {
+      const html = editor.getHTML();
+      try {
+        await api.put(`/api/documents/${id}`, {
+          content: html,
+        });
+        isContentDirty.current = false;
+        setStatus("Saved");
+      } catch (err) {
+        console.error("Failed to save content", err);
+        setStatus("Error saving");
+      }
+    };
+
+    const handleUpdate = () => {
+      isContentDirty.current = true;
+      setStatus("Saving...");
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(saveContent, 1000);
+    };
+
+    editor.on("update", handleUpdate);
+
+    return () => {
+      editor.off("update", handleUpdate);
+      clearTimeout(debounceTimer);
+    };
+  }, [editor, id]);
 
   useEffect(() => {
     const fetchDocument = async () => {
@@ -61,6 +95,48 @@ const DocumentEditor = () => {
 
     fetchDocument();
   }, [id, editor]);
+
+  const saveTitle = async (newTitle: string) => {
+    if (!id) return;
+    try {
+      await api.put(`/api/documents/${id}`, {
+        title: newTitle.trim(),
+      });
+      if (!isContentDirty.current) {
+        setStatus("Saved");
+      }
+    } catch (err) {
+      console.error("Failed to save title", err);
+      setStatus("Error saving");
+    }
+  };
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setDocument((prev) => (prev ? { ...prev, title: value } : prev));
+
+    setStatus("Saving...");
+
+    if (titleDebounceRef.current) {
+      clearTimeout(titleDebounceRef.current);
+    }
+
+    titleDebounceRef.current = setTimeout(() => {
+      saveTitle(value);
+    }, 1000);
+  };
+
+  const handleTitleBlur = () => {
+    if (!document) return;
+    const trimmed = document.title.trim();
+    if (trimmed !== document.title) {
+      setDocument((prev) => (prev ? { ...prev, title: trimmed } : prev));
+      if (titleDebounceRef.current) {
+        clearTimeout(titleDebounceRef.current);
+      }
+      saveTitle(trimmed);
+    }
+  };
 
   if (loading)
     return (
@@ -92,20 +168,24 @@ const DocumentEditor = () => {
             >
               &larr; Back
             </button>
-            <h1 className="text-xl font-serif font-bold text-gray-900 truncate max-w-md">
-              {document.title}
-            </h1>
+            <input
+              className="text-xl font-serif font-bold text-gray-900 bg-transparent border-b border-transparent focus:border-gray-400 focus:outline-none truncate max-w-md"
+              value={document.title ?? ""}
+              onChange={handleTitleChange}
+              onBlur={handleTitleBlur}
+              placeholder="Untitled document"
+            />
           </div>
           <div>
             <span className="text-xs uppercase tracking-widest text-gray-400">
-              Saved
+              {status}
             </span>
           </div>
         </div>
       </header>
 
       <main className="flex-1 overflow-y-auto py-12 px-4 sm:px-6 lg:px-8 bg-white">
-        <div className="max-w-3xl mx-auto min-h-[calc(100vh-10rem)]">
+        <div className="max-w-3xl mx-auto min-h-[calc(100vh-10rem)] border border-gray-200 rounded-lg shadow-sm p-6 bg-white">
           <EditorContent
             editor={editor}
             className="h-full focus:outline-none"
