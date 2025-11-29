@@ -1,8 +1,10 @@
 import { useEffect, useState, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useEditor, EditorContent } from "@tiptap/react";
+import { useParams } from "react-router-dom";
+import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import api from "../api/axios";
+import EditorHeader from "../components/editor/EditorHeader";
+import EditorContentArea from "../components/editor/EditorContentArea";
 
 interface Document {
   id: string;
@@ -13,7 +15,6 @@ interface Document {
 
 const DocumentEditor = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const [document, setDocument] = useState<Document | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -159,39 +160,13 @@ const DocumentEditor = () => {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <header className="bg-white border-b border-gray-200 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center">
-            <button
-              onClick={() => navigate("/dashboard")}
-              className="mr-6 text-gray-400 hover:text-black transition-colors"
-            >
-              &larr; Back
-            </button>
-            <input
-              className="text-xl font-serif font-bold text-gray-900 bg-transparent border-b border-transparent focus:border-gray-400 focus:outline-none truncate max-w-md"
-              value={document.title ?? ""}
-              onChange={handleTitleChange}
-              onBlur={handleTitleBlur}
-              placeholder="Untitled document"
-            />
-          </div>
-          <div>
-            <span className="text-xs uppercase tracking-widest text-gray-400">
-              {status}
-            </span>
-          </div>
-        </div>
-      </header>
-
-      <main className="flex-1 overflow-y-auto py-12 px-4 sm:px-6 lg:px-8 bg-white">
-        <div className="max-w-3xl mx-auto min-h-[calc(100vh-10rem)] border border-gray-200 rounded-lg shadow-sm p-6 bg-white">
-          <EditorContent
-            editor={editor}
-            className="h-full focus:outline-none"
-          />
-        </div>
-      </main>
+      <EditorHeader
+        title={document.title ?? ""}
+        status={status}
+        onTitleChange={handleTitleChange}
+        onTitleBlur={handleTitleBlur}
+      />
+      <EditorContentArea editor={editor} />
     </div>
   );
 };
