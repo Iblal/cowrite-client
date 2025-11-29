@@ -116,7 +116,7 @@ const Dashboard = () => {
                         {doc.title || "Untitled"}
                       </h3>
                       <p className="mt-2 text-sm text-gray-500">
-                        Edited {new Date(doc.updated_at).toLocaleDateString()}
+                        Edited {new Date(doc.updated_at).toLocaleString()}
                       </p>
                     </div>
                     <div className="mt-4 flex justify-end">
