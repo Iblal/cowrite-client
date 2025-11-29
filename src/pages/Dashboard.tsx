@@ -7,7 +7,7 @@ import Logo from "../components/Logo";
 interface Document {
   id: string;
   title: string;
-  updatedAt: string;
+  updated_at: string;
 }
 
 const Dashboard = () => {
@@ -116,7 +116,7 @@ const Dashboard = () => {
                         {doc.title || "Untitled"}
                       </h3>
                       <p className="mt-2 text-sm text-gray-500">
-                        Edited {new Date(doc.updatedAt).toLocaleDateString()}
+                        Edited {new Date(doc.updated_at).toLocaleDateString()}
                       </p>
                     </div>
                     <div className="mt-4 flex justify-end">
