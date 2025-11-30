@@ -76,6 +76,11 @@ const DocumentEditor = () => {
         const doc = response.data;
         setDocument(doc);
 
+        if (!doc) {
+          // No document found; let the main render branch show "Document not found"
+          return;
+        }
+
         // If the server returns content in a format Tiptap understands (JSON or HTML), set it.
         // For now, if there's a 'content' field, we use it.
         // If only yjs_state_blob is present and we don't have Yjs set up, we might start empty.
