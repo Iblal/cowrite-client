@@ -10,8 +10,6 @@ const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  //Testing commit contribution
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
