@@ -59,11 +59,6 @@ const DocumentEditor = () => {
   });
 
   useEffect(() => {
-    if (!editor || !document) return;
-    editor.commands.focus("end");
-  }, [editor, document]);
-
-  useEffect(() => {
     if (!editor || !id) return;
 
     let debounceTimer: ReturnType<typeof setTimeout>;
