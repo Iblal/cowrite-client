@@ -16,7 +16,10 @@ vi.mock("@tiptap/react", () => ({
     <div data-testid="editor-content">{children}</div>
   ),
   useEditor: vi.fn(() => ({
-    commands: { setContent: vi.fn() },
+    commands: {
+      setContent: vi.fn(),
+      focus: vi.fn(),
+    },
     on: vi.fn(),
     off: vi.fn(),
     getHTML: vi.fn(() => "<p>content</p>"),
