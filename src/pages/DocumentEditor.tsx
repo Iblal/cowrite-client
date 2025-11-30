@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import api from "../api/axios";
-import EditorHeader from "../components/editor/EditorHeader";
+import DocumentHeader from "../components/editor/DocumentHeader";
 import EditorContentArea from "../components/editor/EditorContentArea";
 
 interface Document {
@@ -169,7 +169,7 @@ const DocumentEditor = () => {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <EditorHeader
+      <DocumentHeader
         title={document.title ?? ""}
         status={status}
         onTitleChange={handleTitleChange}

@@ -1,18 +1,18 @@
 import React from "react";
 
-interface EditorHeaderProps {
+interface DocumentHeaderProps {
   title: string;
   status: string;
   onTitleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onTitleBlur: () => void;
 }
 
-const EditorHeader: React.FC<EditorHeaderProps> = ({
+const DocumentHeader = ({
   title,
   status,
   onTitleChange,
   onTitleBlur,
-}) => {
+}: DocumentHeaderProps) => {
   return (
     <header className="bg-white border-b border-gray-200 z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -85,4 +85,4 @@ const EditorHeader: React.FC<EditorHeaderProps> = ({
   );
 };
 
-export default EditorHeader;
+export default DocumentHeader;
