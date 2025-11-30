@@ -2,6 +2,14 @@ import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import Underline from "@tiptap/extension-underline";
+import Link from "@tiptap/extension-link";
+import Superscript from "@tiptap/extension-superscript";
+import Subscript from "@tiptap/extension-subscript";
+import TextAlign from "@tiptap/extension-text-align";
+import Image from "@tiptap/extension-image";
+import TaskList from "@tiptap/extension-task-list";
+import TaskItem from "@tiptap/extension-task-item";
 import api from "../api/axios";
 import DocumentHeader from "../components/editor/DocumentHeader";
 import EditorToolbar from "../components/editor/EditorToolbar";
@@ -24,7 +32,23 @@ const DocumentEditor = () => {
   const titleDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [
+      StarterKit,
+      Underline,
+      Link.configure({
+        openOnClick: false,
+      }),
+      Superscript,
+      Subscript,
+      TextAlign.configure({
+        types: ["heading", "paragraph"],
+      }),
+      Image,
+      TaskList,
+      TaskItem.configure({
+        nested: true,
+      }),
+    ],
     content: "",
     editorProps: {
       attributes: {

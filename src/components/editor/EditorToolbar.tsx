@@ -10,27 +10,44 @@ const buttonBaseClasses =
 const EditorToolbar = ({ editor }: EditorToolbarProps) => {
   if (!editor) return null;
 
+  const addImage = () => {
+    const url = window.prompt("URL");
+    if (url) {
+      editor.chain().focus().setImage({ src: url }).run();
+    }
+  };
+
+  const setLink = () => {
+    const previousUrl = editor.getAttributes("link").href;
+    const url = window.prompt("URL", previousUrl);
+
+    if (url === null) {
+      return;
+    }
+
+    if (url === "") {
+      editor.chain().focus().extendMarkRange("link").unsetLink().run();
+      return;
+    }
+
+    editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
+  };
+
   const groups = [
     {
-      label: "Text style",
+      label: "History",
       buttons: [
         {
-          label: "B",
-          title: "Bold",
-          isActive: () => editor.isActive("bold"),
-          onClick: () => editor.chain().focus().toggleBold().run(),
+          label: "Undo",
+          title: "Undo",
+          isActive: () => false,
+          onClick: () => editor.chain().focus().undo().run(),
         },
         {
-          label: "I",
-          title: "Italic",
-          isActive: () => editor.isActive("italic"),
-          onClick: () => editor.chain().focus().toggleItalic().run(),
-        },
-        {
-          label: "S",
-          title: "Strike",
-          isActive: () => editor.isActive("strike"),
-          onClick: () => editor.chain().focus().toggleStrike().run(),
+          label: "Redo",
+          title: "Redo",
+          isActive: () => false,
+          onClick: () => editor.chain().focus().redo().run(),
         },
       ],
     },
@@ -75,22 +92,148 @@ const EditorToolbar = ({ editor }: EditorToolbarProps) => {
           isActive: () => editor.isActive("orderedList"),
           onClick: () => editor.chain().focus().toggleOrderedList().run(),
         },
+        {
+          label: "Task",
+          title: "Task list",
+          isActive: () => editor.isActive("taskList"),
+          onClick: () => editor.chain().focus().toggleTaskList().run(),
+        },
+        {
+          label: "→|",
+          title: "Indent",
+          isActive: () => false,
+          onClick: () => {
+            if (editor.isActive("taskItem")) {
+              return editor.chain().focus().sinkListItem("taskItem").run();
+            }
+            return editor.chain().focus().sinkListItem("listItem").run();
+          },
+        },
+        {
+          label: "|←",
+          title: "Outdent",
+          isActive: () => false,
+          onClick: () => {
+            if (editor.isActive("taskItem")) {
+              return editor.chain().focus().liftListItem("taskItem").run();
+            }
+            return editor.chain().focus().liftListItem("listItem").run();
+          },
+        },
       ],
     },
     {
-      label: "History",
+      label: "Text style",
       buttons: [
         {
-          label: "Undo",
-          title: "Undo",
-          isActive: () => false,
-          onClick: () => editor.chain().focus().undo().run(),
+          label: "B",
+          title: "Bold",
+          isActive: () => editor.isActive("bold"),
+          onClick: () => editor.chain().focus().toggleBold().run(),
         },
         {
-          label: "Redo",
-          title: "Redo",
+          label: "I",
+          title: "Italic",
+          isActive: () => editor.isActive("italic"),
+          onClick: () => editor.chain().focus().toggleItalic().run(),
+        },
+        {
+          label: "U",
+          title: "Underline",
+          isActive: () => editor.isActive("underline"),
+          onClick: () => editor.chain().focus().toggleUnderline().run(),
+        },
+        {
+          label: "S",
+          title: "Strike",
+          isActive: () => editor.isActive("strike"),
+          onClick: () => editor.chain().focus().toggleStrike().run(),
+        },
+        {
+          label: "Code",
+          title: "Code",
+          isActive: () => editor.isActive("code"),
+          onClick: () => editor.chain().focus().toggleCode().run(),
+        },
+        {
+          label: "Quote",
+          title: "Blockquote",
+          isActive: () => editor.isActive("blockquote"),
+          onClick: () => editor.chain().focus().toggleBlockquote().run(),
+        },
+      ],
+    },
+    {
+      label: "Script",
+      buttons: [
+        {
+          label: "Sub",
+          title: "Subscript",
+          isActive: () => editor.isActive("subscript"),
+          onClick: () => editor.chain().focus().toggleSubscript().run(),
+        },
+        {
+          label: "Sup",
+          title: "Superscript",
+          isActive: () => editor.isActive("superscript"),
+          onClick: () => editor.chain().focus().toggleSuperscript().run(),
+        },
+      ],
+    },
+    {
+      label: "Align",
+      buttons: [
+        {
+          label: "Left",
+          title: "Align Left",
+          isActive: () => editor.isActive({ textAlign: "left" }),
+          onClick: () => editor.chain().focus().setTextAlign("left").run(),
+        },
+        {
+          label: "Center",
+          title: "Align Center",
+          isActive: () => editor.isActive({ textAlign: "center" }),
+          onClick: () => editor.chain().focus().setTextAlign("center").run(),
+        },
+        {
+          label: "Right",
+          title: "Align Right",
+          isActive: () => editor.isActive({ textAlign: "right" }),
+          onClick: () => editor.chain().focus().setTextAlign("right").run(),
+        },
+        {
+          label: "Justify",
+          title: "Align Justify",
+          isActive: () => editor.isActive({ textAlign: "justify" }),
+          onClick: () => editor.chain().focus().setTextAlign("justify").run(),
+        },
+      ],
+    },
+    {
+      label: "Insert",
+      buttons: [
+        {
+          label: "Link",
+          title: "Link",
+          isActive: () => editor.isActive("link"),
+          onClick: setLink,
+        },
+        {
+          label: "Image",
+          title: "Image",
           isActive: () => false,
-          onClick: () => editor.chain().focus().redo().run(),
+          onClick: addImage,
+        },
+      ],
+    },
+    {
+      label: "Clear",
+      buttons: [
+        {
+          label: "Clear",
+          title: "Clear Formatting",
+          isActive: () => false,
+          onClick: () => editor.chain().focus().unsetAllMarks().run(),
         },
       ],
     },
