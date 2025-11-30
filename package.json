@@ -12,7 +12,10 @@
     "test:watch": "vitest --watch"
   },
   "dependencies": {
+    "@hocuspocus/provider": "^3.4.0",
     "@tiptap/core": "^3.11.1",
+    "@tiptap/extension-collaboration": "^3.11.1",
+    "@tiptap/extension-collaboration-caret": "^3.11.1",
     "@tiptap/extension-image": "^3.11.1",
     "@tiptap/extension-link": "^3.11.1",
     "@tiptap/extension-subscript": "^3.11.1",
@@ -28,7 +31,8 @@
     "lucide-react": "^0.555.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "react-router-dom": "^7.9.6"
+    "react-router-dom": "^7.9.6",
+    "yjs": "^13.6.27"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
