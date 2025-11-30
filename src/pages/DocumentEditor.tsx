@@ -4,6 +4,7 @@ import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import api from "../api/axios";
 import DocumentHeader from "../components/editor/DocumentHeader";
+import EditorToolbar from "../components/editor/EditorToolbar";
 import EditorContentArea from "../components/editor/EditorContentArea";
 
 interface Document {
@@ -175,6 +176,7 @@ const DocumentEditor = () => {
         onTitleChange={handleTitleChange}
         onTitleBlur={handleTitleBlur}
       />
+      <EditorToolbar editor={editor} />
       <EditorContentArea editor={editor} />
     </div>
   );
