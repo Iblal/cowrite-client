@@ -293,7 +293,7 @@ const EditorToolbar = ({ editor }: EditorToolbarProps) => {
 
   return (
     <div className="bg-white border-b border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex flex-wrap gap-3 items-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex flex-wrap gap-3 items-center justify-center">
         {groups.map((group) => (
           <div key={group.label} className="flex items-center gap-1">
             {group.buttons.map((button) => (
