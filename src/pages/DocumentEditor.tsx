@@ -14,6 +14,8 @@ import api from "../api/axios";
 import DocumentHeader from "../components/editor/DocumentHeader";
 import EditorToolbar from "../components/editor/EditorToolbar";
 import EditorContentArea from "../components/editor/EditorContentArea";
+import Collaboration from "@tiptap/extension-collaboration";
+import { HocuspocusProvider } from "@hocuspocus/provider";
 
 interface Document {
   id: string;
@@ -31,9 +33,21 @@ const DocumentEditor = () => {
   const isContentDirty = useRef(false);
   const titleDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const provider = new HocuspocusProvider({
+    url: "ws://localhost:5001/collaboration",
+    name: "example-document",
+  });
+
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        undoRedo: false,
+        link: false,
+        underline: false,
+      }),
+      Collaboration.configure({
+        document: provider.document,
+      }),
       Underline,
       Link.configure({
         openOnClick: false,
@@ -104,17 +118,6 @@ const DocumentEditor = () => {
           // No document found; let the main render branch show "Document not found"
           return;
         }
-
-        // If the server returns content in a format Tiptap understands (JSON or HTML), set it.
-        // For now, if there's a 'content' field, we use it.
-        // If only yjs_state_blob is present and we don't have Yjs set up, we might start empty.
-        if (editor && doc.content) {
-          editor.commands.setContent(doc.content);
-        } else if (editor && doc.yjs_state_blob) {
-          // Placeholder: We can't decode Yjs blob without Yjs lib.
-          // Assuming server might provide a converted content or we start empty.
-          console.warn("Yjs blob found but Yjs not implemented in client yet.");
-        }
       } catch (err) {
         console.error("Failed to fetch document", err);
         setError("Failed to load document");
@@ -124,7 +127,7 @@ const DocumentEditor = () => {
     };
 
     fetchDocument();
-  }, [id, editor]);
+  }, [id]);
 
   const saveTitle = async (newTitle: string) => {
     if (!id) return;
