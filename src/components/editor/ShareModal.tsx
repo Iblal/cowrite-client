@@ -87,9 +87,19 @@ const ShareModal: React.FC<ShareModalProps> = ({
                           </p>
                         </div>
                       </div>
-                      <span className="text-xs font-medium px-2 py-1 bg-gray-100 rounded-full text-gray-600 capitalize">
-                        {collab.permission}
-                      </span>
+                      <select
+                        value={collab.permission}
+                        onChange={(e) =>
+                          onShare(
+                            collab.email,
+                            e.target.value as "read" | "write"
+                          )
+                        }
+                        className="text-xs font-medium px-2 py-1 bg-gray-100 rounded-md text-gray-600 capitalize border-none focus:ring-0 cursor-pointer outline-none"
+                      >
+                        <option value="read">read</option>
+                        <option value="write">write</option>
+                      </select>
                     </div>
                   ))}
                 </div>

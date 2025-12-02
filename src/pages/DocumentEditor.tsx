@@ -179,7 +179,28 @@ const DocumentEditor = () => {
   const handleShare = async (email: string, permission: "read" | "write") => {
     try {
       await api.post(`/api/documents/${id}/share`, { email, permission });
-      alert("Shared successfully!");
+
+      const isUpdate = document?.collaborators?.some((c) => c.email === email);
+
+      setDocument((prev) => {
+        if (!prev) return prev;
+        const newCollaborators = [...(prev.collaborators || [])];
+        const existingIndex = newCollaborators.findIndex(
+          (c) => c.email === email
+        );
+
+        if (existingIndex >= 0) {
+          newCollaborators[existingIndex] = { email, permission };
+        } else {
+          newCollaborators.push({ email, permission });
+        }
+
+        return { ...prev, collaborators: newCollaborators };
+      });
+
+      if (!isUpdate) {
+        alert("Shared successfully!");
+      }
     } catch (error) {
       console.error("Failed to share document:", error);
       alert("Failed to share document");
