@@ -34,9 +34,7 @@ const DocumentEditor = () => {
   const titleDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const provider = new HocuspocusProvider({
-    // Built-in Hocuspocus Server listens on the root WebSocket path
     url: "ws://localhost:5002",
-    // Use the numeric document id so server-side persistence matches
     name: id ?? "unknown",
   });
 
@@ -117,7 +115,6 @@ const DocumentEditor = () => {
         setDocument(doc);
 
         if (!doc) {
-          // No document found; let the main render branch show "Document not found"
           return;
         }
       } catch (err) {
