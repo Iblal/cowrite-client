@@ -24,6 +24,10 @@ interface DocumentMetaData {
     name: string;
     email: string;
   };
+  collaborators: {
+    email: string;
+    permission: "read" | "write";
+  }[];
   currentUserPermission?: "owner" | "write" | "read";
 }
 
@@ -207,6 +211,7 @@ const DocumentEditor = () => {
         title={document.title ?? ""}
         status={status}
         owner={document.owner}
+        collaborators={document.collaborators}
         onTitleChange={handleTitleChange}
         onTitleBlur={handleTitleBlur}
         onShare={handleShare}
