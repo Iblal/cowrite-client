@@ -9,6 +9,10 @@ interface DocumentHeaderProps {
     name: string;
     email: string;
   };
+  collaborators?: {
+    email: string;
+    permission: "read" | "write";
+  }[];
   onTitleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onTitleBlur: () => void;
   onShare?: (email: string, permission: "read" | "write") => void;
@@ -18,6 +22,7 @@ const DocumentHeader = ({
   title,
   status,
   owner,
+  collaborators,
   onTitleChange,
   onTitleBlur,
   onShare,
@@ -118,6 +123,7 @@ const DocumentHeader = ({
         onShare={handleShare}
         title={title}
         owner={owner}
+        collaborators={collaborators}
       />
     </header>
   );
