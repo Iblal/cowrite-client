@@ -10,6 +10,10 @@ interface ShareModalProps {
     name: string;
     email: string;
   };
+  collaborators?: {
+    email: string;
+    permission: "read" | "write";
+  }[];
 }
 
 const ShareModal: React.FC<ShareModalProps> = ({
@@ -18,6 +22,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
   onShare,
   title,
   owner,
+  collaborators,
 }) => {
   const [email, setEmail] = useState("");
   const [permission, setPermission] = useState<"read" | "write">("read");
@@ -60,6 +65,37 @@ const ShareModal: React.FC<ShareModalProps> = ({
                 </p>
               </div>
             )}
+
+            {collaborators && collaborators.length > 0 && (
+              <div className="mb-4">
+                <h4 className="text-sm font-medium text-gray-700 mb-2">
+                  Who has access
+                </h4>
+                <div className="bg-white border border-gray-200 rounded-md divide-y divide-gray-200 max-h-40 overflow-y-auto">
+                  {collaborators.map((collab) => (
+                    <div
+                      key={collab.email}
+                      className="p-3 flex justify-between items-center"
+                    >
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-medium text-gray-600">
+                          {collab.email[0].toUpperCase()}
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">
+                            {collab.email}
+                          </p>
+                        </div>
+                      </div>
+                      <span className="text-xs font-medium px-2 py-1 bg-gray-100 rounded-full text-gray-600 capitalize">
+                        {collab.permission}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div>
               <label
                 htmlFor="email"
