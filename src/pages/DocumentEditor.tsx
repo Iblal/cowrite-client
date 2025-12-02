@@ -24,6 +24,7 @@ interface DocumentMetaData {
     name: string;
     email: string;
   };
+  currentUserPermission?: "owner" | "write" | "read";
 }
 
 const DocumentEditor = () => {
@@ -40,6 +41,7 @@ const DocumentEditor = () => {
   const provider = new HocuspocusProvider({
     url: "ws://localhost:5002",
     name: id ?? "unknown",
+    token: localStorage.getItem("token") || "",
   });
 
   const editor = useEditor({
@@ -75,6 +77,13 @@ const DocumentEditor = () => {
       },
     },
   });
+
+  useEffect(() => {
+    if (editor && document) {
+      const isReadOnly = document.currentUserPermission === "read";
+      editor.setEditable(!isReadOnly);
+    }
+  }, [editor, document]);
 
   useEffect(() => {
     if (!editor) return;
@@ -165,11 +174,11 @@ const DocumentEditor = () => {
 
   const handleShare = async (email: string, permission: "read" | "write") => {
     try {
-      // TODO: Implement API call
-      console.log(`Sharing document ${id} with ${email} (${permission})`);
-      // await api.post(`/documents/${id}/share`, { email, permission });
+      await api.post(`/api/documents/${id}/share`, { email, permission });
+      alert("Shared successfully!");
     } catch (error) {
       console.error("Failed to share document:", error);
+      alert("Failed to share document");
     }
   };
 
