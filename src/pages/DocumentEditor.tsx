@@ -17,18 +17,21 @@ import EditorContentArea from "../components/editor/EditorContentArea";
 import Collaboration from "@tiptap/extension-collaboration";
 import { HocuspocusProvider } from "@hocuspocus/provider";
 
-interface Document {
+interface DocumentMetaData {
   id: string;
   title: string;
 }
 
 const DocumentEditor = () => {
   const { id } = useParams<{ id: string }>();
-  const [document, setDocument] = useState<Document | null>(null);
+
+  const [document, setDocument] = useState<DocumentMetaData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState("Saved");
+
   const titleDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const DEBOUNCE_MS = 1000;
 
   const provider = new HocuspocusProvider({
     url: "ws://localhost:5002",
@@ -69,7 +72,6 @@ const DocumentEditor = () => {
     },
   });
 
-  // Update status when collaborative content changes
   useEffect(() => {
     if (!editor) return;
 
@@ -81,7 +83,7 @@ const DocumentEditor = () => {
       if (timeout) clearTimeout(timeout);
       timeout = setTimeout(() => {
         setStatus("Saved");
-      }, 800);
+      }, DEBOUNCE_MS);
     };
 
     editor.on("update", handleUpdate);
@@ -92,13 +94,12 @@ const DocumentEditor = () => {
     };
   }, [editor]);
 
-  // Only fetch metadata (title)
   useEffect(() => {
     const fetchDocument = async () => {
       if (!id) return;
       try {
         const response = await api.get(`/api/documents/${id}`);
-        const doc = response.data as Document | null;
+        const doc = response.data as DocumentMetaData | null;
 
         if (!doc) {
           setLoading(false);
@@ -132,6 +133,7 @@ const DocumentEditor = () => {
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
+
     setDocument((prev) => (prev ? { ...prev, title: value } : prev));
 
     setStatus("Saving...");
@@ -142,7 +144,7 @@ const DocumentEditor = () => {
 
     titleDebounceRef.current = setTimeout(() => {
       saveTitle(value);
-    }, 1000);
+    }, DEBOUNCE_MS);
   };
 
   const handleTitleBlur = () => {
