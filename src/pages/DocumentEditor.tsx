@@ -20,6 +20,10 @@ import { HocuspocusProvider } from "@hocuspocus/provider";
 interface DocumentMetaData {
   id: string;
   title: string;
+  owner: {
+    name: string;
+    email: string;
+  };
 }
 
 const DocumentEditor = () => {
@@ -159,6 +163,16 @@ const DocumentEditor = () => {
     }
   };
 
+  const handleShare = async (email: string, permission: "read" | "write") => {
+    try {
+      // TODO: Implement API call
+      console.log(`Sharing document ${id} with ${email} (${permission})`);
+      // await api.post(`/documents/${id}/share`, { email, permission });
+    } catch (error) {
+      console.error("Failed to share document:", error);
+    }
+  };
+
   if (loading)
     return (
       <div className="flex justify-center items-center h-screen font-serif">
@@ -183,8 +197,10 @@ const DocumentEditor = () => {
       <DocumentHeader
         title={document.title ?? ""}
         status={status}
+        owner={document.owner}
         onTitleChange={handleTitleChange}
         onTitleBlur={handleTitleBlur}
+        onShare={handleShare}
       />
       <EditorToolbar editor={editor} />
       <EditorContentArea editor={editor} />
