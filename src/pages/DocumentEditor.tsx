@@ -233,6 +233,7 @@ const DocumentEditor = () => {
         status={status}
         owner={document.owner}
         collaborators={document.collaborators}
+        isOwner={document.currentUserPermission === "owner"}
         onTitleChange={handleTitleChange}
         onTitleBlur={handleTitleBlur}
         onShare={handleShare}

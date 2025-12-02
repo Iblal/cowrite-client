@@ -13,6 +13,7 @@ interface DocumentHeaderProps {
     email: string;
     permission: "read" | "write";
   }[];
+  isOwner?: boolean;
   onTitleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onTitleBlur: () => void;
   onShare?: (email: string, permission: "read" | "write") => void;
@@ -23,6 +24,7 @@ const DocumentHeader = ({
   status,
   owner,
   collaborators,
+  isOwner = false,
   onTitleChange,
   onTitleBlur,
   onShare,
@@ -107,13 +109,15 @@ const DocumentHeader = ({
         </div>
 
         <div className="flex items-center">
-          <button
-            onClick={() => setIsShareModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-black rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
-          >
-            <Share className="w-4 h-4" />
-            Share
-          </button>
+          {isOwner && (
+            <button
+              onClick={() => setIsShareModalOpen(true)}
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-black rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
+            >
+              <Share className="w-4 h-4" />
+              Share
+            </button>
+          )}
         </div>
       </div>
 
