@@ -1,11 +1,10 @@
-import React from "react";
 import { EditorContent, Editor } from "@tiptap/react";
 
 interface EditorContentAreaProps {
   editor: Editor | null;
 }
 
-const EditorContentArea: React.FC<EditorContentAreaProps> = ({ editor }) => {
+const EditorContentArea = ({ editor }: EditorContentAreaProps) => {
   return (
     <main className="flex-1 overflow-y-auto py-10 px-4 sm:px-8 lg:px-16 bg-slate-100">
       <div className="flex justify-center">
