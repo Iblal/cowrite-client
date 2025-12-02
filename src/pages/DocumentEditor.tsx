@@ -20,8 +20,6 @@ import { HocuspocusProvider } from "@hocuspocus/provider";
 interface Document {
   id: string;
   title: string;
-  content?: any;
-  yjs_state_blob?: any;
 }
 
 const DocumentEditor = () => {
@@ -30,7 +28,6 @@ const DocumentEditor = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState("Saved");
-  const isContentDirty = useRef(false);
   const titleDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const provider = new HocuspocusProvider({
@@ -72,51 +69,43 @@ const DocumentEditor = () => {
     },
   });
 
+  // Update status when collaborative content changes
   useEffect(() => {
-    if (!editor || !id) return;
+    if (!editor) return;
 
-    let debounceTimer: ReturnType<typeof setTimeout>;
-
-    const saveContent = async () => {
-      const html = editor.getHTML();
-      try {
-        await api.put(`/api/documents/${id}`, {
-          content: html,
-        });
-        isContentDirty.current = false;
-        setStatus("Saved");
-      } catch (err) {
-        console.error("Failed to save content", err);
-        setStatus("Error saving");
-      }
-    };
+    let timeout: ReturnType<typeof setTimeout> | null = null;
 
     const handleUpdate = () => {
-      isContentDirty.current = true;
       setStatus("Saving...");
-      clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(saveContent, 1000);
+
+      if (timeout) clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        setStatus("Saved");
+      }, 800);
     };
 
     editor.on("update", handleUpdate);
 
     return () => {
       editor.off("update", handleUpdate);
-      clearTimeout(debounceTimer);
+      if (timeout) clearTimeout(timeout);
     };
-  }, [editor, id]);
+  }, [editor]);
 
+  // Only fetch metadata (title)
   useEffect(() => {
     const fetchDocument = async () => {
       if (!id) return;
       try {
         const response = await api.get(`/api/documents/${id}`);
-        const doc = response.data;
-        setDocument(doc);
+        const doc = response.data as Document | null;
 
         if (!doc) {
+          setLoading(false);
           return;
         }
+
+        setDocument(doc);
       } catch (err) {
         console.error("Failed to fetch document", err);
         setError("Failed to load document");
@@ -134,9 +123,7 @@ const DocumentEditor = () => {
       await api.put(`/api/documents/${id}`, {
         title: newTitle.trim(),
       });
-      if (!isContentDirty.current) {
-        setStatus("Saved");
-      }
+      setStatus("Saved");
     } catch (err) {
       console.error("Failed to save title", err);
       setStatus("Error saving");
