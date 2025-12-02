@@ -4,6 +4,10 @@ export interface Document {
   id: string;
   title: string;
   updated_at: string;
+  owner?: {
+    name: string;
+    email: string;
+  };
 }
 
 const DocumentCard = ({ doc }: { doc: Document }) => (
@@ -16,6 +20,9 @@ const DocumentCard = ({ doc }: { doc: Document }) => (
         <h3 className="text-lg font-medium text-gray-900 group-hover:text-black truncate font-serif">
           {doc.title || "Untitled"}
         </h3>
+        {doc.owner && (
+          <p className="text-xs text-gray-500 mt-1">Owner: {doc.owner.name}</p>
+        )}
         <p className="mt-2 text-sm text-gray-500">
           Edited {new Date(doc.updated_at).toLocaleString()}
         </p>

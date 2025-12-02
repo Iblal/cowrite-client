@@ -7,6 +7,7 @@ import DocumentList from "../components/DocumentList";
 
 const Dashboard = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
+  const [sharedDocuments, setSharedDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -14,8 +15,12 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchDocuments = async () => {
       try {
-        const response = await api.get("/api/documents");
-        setDocuments(response.data);
+        const [docsRes, sharedDocsRes] = await Promise.all([
+          api.get("/api/documents"),
+          api.get("/api/documents/shared"),
+        ]);
+        setDocuments(docsRes.data);
+        setSharedDocuments(sharedDocsRes.data);
       } catch (err) {
         console.error("Failed to fetch documents", err);
         setError("Failed to load documents");
@@ -76,6 +81,19 @@ const Dashboard = () => {
             onCreateDocument={handleCreateDocument}
           />
         </div>
+
+        {sharedDocuments.length > 0 && (
+          <>
+            <div className="mt-12 mb-8">
+              <h2 className="text-2xl font-serif font-bold text-gray-900">
+                Shared with You
+              </h2>
+            </div>
+            <div className="bg-white">
+              <DocumentList documents={sharedDocuments} />
+            </div>
+          </>
+        )}
       </main>
     </div>
   );
