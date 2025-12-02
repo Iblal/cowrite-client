@@ -34,8 +34,10 @@ const DocumentEditor = () => {
   const titleDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const provider = new HocuspocusProvider({
-    url: "ws://localhost:5001/collaboration",
-    name: "example-document",
+    // Built-in Hocuspocus Server listens on the root WebSocket path
+    url: "ws://localhost:5002",
+    // Use the numeric document id so server-side persistence matches
+    name: id ?? "unknown",
   });
 
   const editor = useEditor({
