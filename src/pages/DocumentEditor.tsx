@@ -46,7 +46,7 @@ const DocumentEditor = () => {
   const DEBOUNCE_MS = 1000;
 
   const provider = new HocuspocusProvider({
-    url: "ws://localhost:5002",
+    url: import.meta.env.VITE_WS_URL || "ws://localhost:5002",
     name: id ?? "unknown",
     token: localStorage.getItem("token") || "",
   });
