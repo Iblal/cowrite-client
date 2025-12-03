@@ -66,6 +66,7 @@ const DocumentEditor = () => {
       CollaborationCaret.configure({
         provider,
         user: {
+          // initial value; will be updated once user is loaded
           name: displayName,
           color: "#f783ac",
         },
@@ -93,6 +94,17 @@ const DocumentEditor = () => {
       },
     },
   });
+
+  // Keep the provider creation as-is, but update the caret user once auth user is available
+  useEffect(() => {
+    if (!editor) return;
+
+    // Update CollaborationCaret's current user based on authenticated user
+    editor.commands.updateUser({
+      name: user?.name || "Anonymous",
+      color: "#f783ac",
+    });
+  }, [editor, user]);
 
   useEffect(() => {
     if (editor && document) {
