@@ -15,6 +15,7 @@ import DocumentHeader from "../components/editor/DocumentHeader";
 import EditorToolbar from "../components/editor/EditorToolbar";
 import EditorContentArea from "../components/editor/EditorContentArea";
 import Collaboration from "@tiptap/extension-collaboration";
+import CollaborationCaret from "@tiptap/extension-collaboration-caret";
 import { HocuspocusProvider } from "@hocuspocus/provider";
 
 interface DocumentMetaData {
@@ -57,6 +58,13 @@ const DocumentEditor = () => {
       }),
       Collaboration.configure({
         document: provider.document,
+      }),
+      CollaborationCaret.configure({
+        provider,
+        user: {
+          name: "A user",
+          color: "#f783ac",
+        },
       }),
       Underline,
       Link.configure({
