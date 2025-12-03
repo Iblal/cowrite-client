@@ -51,7 +51,7 @@ const DocumentEditor = () => {
     token: localStorage.getItem("token") || "",
   });
 
-  const displayName = user?.name || user?.email || "Anonymous";
+  const displayName = user?.name || "Anonymous";
 
   const editor = useEditor({
     extensions: [
