@@ -35,7 +35,6 @@ const DocumentHeader = ({
     if (onShare) {
       onShare(email, permission);
     }
-    // You might want to show a success toast here or let the parent handle it
   };
 
   return (
@@ -44,11 +43,12 @@ const DocumentHeader = ({
         <div className="flex items-center space-x-4">
           <div className="flex items-center relative group">
             <input
-              className="text-xl font-serif font-bold text-gray-900 bg-transparent border border-transparent hover:border-gray-300 hover:bg-gray-50 rounded px-2 -ml-2 focus:border-gray-400 focus:bg-white focus:outline-none truncate max-w-md transition-colors duration-200"
+              className="text-xl font-serif font-bold text-gray-900 bg-transparent border border-transparent hover:border-gray-300 hover:bg-gray-50 rounded px-2 -ml-2 focus:border-gray-400 focus:bg-white focus:outline-none truncate max-w-md transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:bg-transparent disabled:hover:border-transparent"
               value={title}
-              onChange={onTitleChange}
-              onBlur={onTitleBlur}
+              onChange={isOwner ? onTitleChange : undefined}
+              onBlur={isOwner ? onTitleBlur : undefined}
               placeholder="Untitled document"
+              disabled={!isOwner}
             />
             <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 px-2 py-1 bg-black text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-20">
               Rename
