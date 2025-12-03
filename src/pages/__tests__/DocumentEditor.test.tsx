@@ -4,12 +4,23 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import DocumentEditor from "../DocumentEditor";
 import api from "../../api/axios";
 
+import { AuthContext, type AuthContextType } from "../../context/AuthContext";
+
 vi.mock("../../api/axios", () => ({
   default: {
     get: vi.fn(),
     put: vi.fn(),
   },
 }));
+
+const authValue: AuthContextType = {
+  user: { id: "1", email: "user@example.com", name: "Test User" },
+  token: "token",
+  isAuthenticated: true,
+  login: vi.fn(),
+  register: vi.fn(),
+  logout: vi.fn(),
+};
 
 vi.mock("@tiptap/react", () => ({
   EditorContent: ({ children }: { children?: React.ReactNode }) => (
@@ -19,7 +30,9 @@ vi.mock("@tiptap/react", () => ({
     commands: {
       setContent: vi.fn(),
       focus: vi.fn(),
+      updateUser: vi.fn(),
     },
+    setEditable: vi.fn(),
     on: vi.fn(),
     off: vi.fn(),
     getHTML: vi.fn(() => "<p>content</p>"),
@@ -59,11 +72,13 @@ describe("DocumentEditor", () => {
 
   const renderWithRoute = (id: string) => {
     return render(
-      <MemoryRouter initialEntries={[`/doc/${id}`]}>
-        <Routes>
-          <Route path="/doc/:id" element={<DocumentEditor />} />
-        </Routes>
-      </MemoryRouter>
+      <AuthContext.Provider value={authValue}>
+        <MemoryRouter initialEntries={[`/doc/${id}`]}>
+          <Routes>
+            <Route path="/doc/:id" element={<DocumentEditor />} />
+          </Routes>
+        </MemoryRouter>
+      </AuthContext.Provider>
     );
   };
 
@@ -102,26 +117,21 @@ describe("DocumentEditor", () => {
   });
 
   it("saves title on change after debounce", async () => {
+    const putSpy = (
+      api.put as unknown as ReturnType<typeof vi.fn>
+    ).mockResolvedValue({});
     (api.get as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
-      data: { id: "1", title: "Old title" },
+      data: { id: "1", title: "Old title", currentUserPermission: "owner" },
     });
-
-    (api.put as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({});
 
     renderWithRoute("1");
 
-    await waitFor(() => {
-      expect(screen.getByDisplayValue("Old title")).toBeInTheDocument();
-    });
-
-    const input = screen.getByDisplayValue("Old title") as HTMLInputElement;
-
+    const input = await screen.findByDisplayValue("Old title");
     fireEvent.change(input, { target: { value: "New title" } });
 
-    // Wait up to a reasonable time for the debounced save to fire
     await waitFor(
       () => {
-        expect(api.put).toHaveBeenCalledWith("/api/documents/1", {
+        expect(putSpy).toHaveBeenCalledWith("/api/documents/1", {
           title: "New title",
         });
       },

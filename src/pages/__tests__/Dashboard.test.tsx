@@ -46,12 +46,24 @@ describe("Dashboard", () => {
   });
 
   it("renders documents after successful fetch", async () => {
-    (api.get as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
-      data: [
-        { id: "1", title: "Doc 1" },
-        { id: "2", title: "Doc 2" },
-      ],
-    });
+    (api.get as unknown as ReturnType<typeof vi.fn>).mockImplementation(
+      (url) => {
+        if (url === "/api/documents") {
+          return Promise.resolve({
+            data: [
+              { id: "1", title: "Doc 1" },
+              { id: "2", title: "Doc 2" },
+            ],
+          });
+        }
+        if (url === "/api/documents/shared") {
+          return Promise.resolve({
+            data: [],
+          });
+        }
+        return Promise.reject(new Error("not found"));
+      }
+    );
 
     renderDashboard(["/dashboard"]);
 

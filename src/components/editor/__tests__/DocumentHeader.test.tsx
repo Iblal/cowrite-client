@@ -8,6 +8,7 @@ describe("DocumentHeader", () => {
     status: "Saved",
     onTitleChange: vi.fn(),
     onTitleBlur: vi.fn(),
+    isOwner: true,
   };
 
   it("renders the document title", () => {
