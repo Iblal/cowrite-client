@@ -8,7 +8,6 @@
   --font-serif: "Playfair Display", serif;
 }
 
-/* Tiptap Task List Styles */
 ul[data-type="taskList"] {
   list-style: none;
   padding: 0;
@@ -34,13 +33,11 @@ ul[data-type="taskList"] input[type="checkbox"] {
   cursor: pointer;
 }
 
-/* Basic editor styles */
 .tiptap {
   :first-child {
     margin-top: 0;
   }
 
-  /* Placeholder (at the top) */
   p.is-editor-empty:first-child::before {
     color: #9ca3af;
     content: attr(data-placeholder);
@@ -53,7 +50,6 @@ ul[data-type="taskList"] input[type="checkbox"] {
     word-break: break-all;
   }
 
-  /* Give a remote user a caret */
   .collaboration-carets__caret {
     border-left: 1px solid #0d0d0d;
     border-right: 1px solid #0d0d0d;
@@ -64,7 +60,6 @@ ul[data-type="taskList"] input[type="checkbox"] {
     word-break: normal;
   }
 
-  /* Render the username above the caret */
   .collaboration-carets__label {
     border-radius: 3px 3px 3px 0;
     color: #0d0d0d;

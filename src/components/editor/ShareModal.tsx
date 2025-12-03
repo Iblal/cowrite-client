@@ -16,14 +16,14 @@ interface ShareModalProps {
   }[];
 }
 
-const ShareModal: React.FC<ShareModalProps> = ({
+const ShareModal = ({
   isOpen,
   onClose,
   onShare,
   title,
   owner,
   collaborators,
-}) => {
+}: ShareModalProps) => {
   const [email, setEmail] = useState("");
   const [permission, setPermission] = useState<"read" | "write">("read");
   const [collabPermissions, setCollabPermissions] = useState<
