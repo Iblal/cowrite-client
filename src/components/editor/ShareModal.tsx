@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { X, UserPlus } from "lucide-react";
 
 interface ShareModalProps {
@@ -26,6 +26,19 @@ const ShareModal: React.FC<ShareModalProps> = ({
 }) => {
   const [email, setEmail] = useState("");
   const [permission, setPermission] = useState<"read" | "write">("read");
+  const [collabPermissions, setCollabPermissions] = useState<
+    Record<string, "read" | "write">
+  >({});
+
+  useEffect(() => {
+    if (collaborators) {
+      const initial: Record<string, "read" | "write"> = {};
+      collaborators.forEach((c) => {
+        initial[c.email] = c.permission;
+      });
+      setCollabPermissions(initial);
+    }
+  }, [collaborators]);
 
   if (!isOpen) return null;
 
@@ -72,36 +85,66 @@ const ShareModal: React.FC<ShareModalProps> = ({
                   Who has access
                 </h4>
                 <div className="bg-white border border-gray-200 rounded-md divide-y divide-gray-200 max-h-40 overflow-y-auto">
-                  {collaborators.map((collab) => (
-                    <div
-                      key={collab.email}
-                      className="p-3 flex justify-between items-center"
-                    >
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-medium text-gray-600">
-                          {collab.email[0].toUpperCase()}
+                  {collaborators.map((collab) => {
+                    const currentValue =
+                      collabPermissions[collab.email] ?? collab.permission;
+                    const isDirty = currentValue !== collab.permission;
+
+                    return (
+                      <div
+                        key={collab.email}
+                        className="p-3 flex items-center justify-between gap-3"
+                      >
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-medium text-gray-600">
+                            {collab.email[0].toUpperCase()}
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">
+                              {collab.email}
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-sm font-medium text-gray-900">
-                            {collab.email}
-                          </p>
+
+                        <div className="flex items-center gap-2">
+                          <select
+                            value={currentValue}
+                            onChange={(e) =>
+                              setCollabPermissions((prev) => ({
+                                ...prev,
+                                [collab.email]: e.target.value as
+                                  | "read"
+                                  | "write",
+                              }))
+                            }
+                            className="text-xs font-medium px-2 py-1 bg-gray-100 rounded-md text-gray-600 capitalize border-none focus:ring-0 cursor-pointer outline-none"
+                          >
+                            <option value="read">read</option>
+                            <option value="write">write</option>
+                          </select>
+
+                          <button
+                            type="button"
+                            disabled={!isDirty}
+                            onClick={() => {
+                              onShare(collab.email, currentValue);
+                              setCollabPermissions((prev) => ({
+                                ...prev,
+                                [collab.email]: currentValue,
+                              }));
+                            }}
+                            className={`text-xs font-medium px-3 py-1 rounded-md border ${
+                              isDirty
+                                ? "bg-black text-white border-black hover:bg-gray-800"
+                                : "bg-gray-100 text-gray-400 border-gray-200 cursor-default"
+                            }`}
+                          >
+                            Update
+                          </button>
                         </div>
                       </div>
-                      <select
-                        value={collab.permission}
-                        onChange={(e) =>
-                          onShare(
-                            collab.email,
-                            e.target.value as "read" | "write"
-                          )
-                        }
-                        className="text-xs font-medium px-2 py-1 bg-gray-100 rounded-md text-gray-600 capitalize border-none focus:ring-0 cursor-pointer outline-none"
-                      >
-                        <option value="read">read</option>
-                        <option value="write">write</option>
-                      </select>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             )}
