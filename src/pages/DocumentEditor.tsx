@@ -17,6 +17,7 @@ import EditorContentArea from "../components/editor/EditorContentArea";
 import Collaboration from "@tiptap/extension-collaboration";
 import CollaborationCaret from "@tiptap/extension-collaboration-caret";
 import { HocuspocusProvider } from "@hocuspocus/provider";
+import { useAuth } from "../context/AuthContext";
 
 interface DocumentMetaData {
   id: string;
@@ -34,6 +35,7 @@ interface DocumentMetaData {
 
 const DocumentEditor = () => {
   const { id } = useParams<{ id: string }>();
+  const { user } = useAuth();
 
   const [document, setDocument] = useState<DocumentMetaData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -49,6 +51,8 @@ const DocumentEditor = () => {
     token: localStorage.getItem("token") || "",
   });
 
+  const displayName = user?.name || user?.email || "Anonymous";
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -62,7 +66,7 @@ const DocumentEditor = () => {
       CollaborationCaret.configure({
         provider,
         user: {
-          name: "A user",
+          name: displayName,
           color: "#f783ac",
         },
       }),
