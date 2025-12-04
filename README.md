@@ -4,7 +4,7 @@ The frontend application for Cowrite, a modern real-time collaborative text edit
 
 Here's a video demo
 
-https://www.youtube.com/watch?v=lJmM6SQlhzI
+<iframe width="560" height="315" src="https://www.youtube.com/embed/lJmM6SQlhzI" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> this is the video I want in https://www.youtube.com/watch?v=lJmM6SQlhzI
 
 ## Features
 
