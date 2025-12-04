@@ -2,9 +2,10 @@
 
 The frontend application for Cowrite, a modern real-time collaborative text editor. Built with React, Vite, and Tiptap.
 
-Here's a video demo
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/lJmM6SQlhzI" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> this is the video I want in https://www.youtube.com/watch?v=lJmM6SQlhzI
+Here's a video demo, click to watch 👇📺
+
+[![Cowrite demo](https://img.youtube.com/vi/lJmM6SQlhzI/sddefault.jpg)](https://www.youtube.com/watch?v=lJmM6SQlhzI)
 
 ## Features
 
