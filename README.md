@@ -1,66 +1,86 @@
-# 💻 Cowrite: Client Application (MVP)
+# Cowrite Client
 
-## 🌟 Introduction
+The frontend application for Cowrite, a modern real-time collaborative text editor. Built with React, Vite, and Tiptap.
 
-This repository contains the **Cowrite Client Application**, the frontend interface for the collaborative Markdown editor. It is built as a single-page application (SPA) responsible for authentication, real-time editing, and displaying the user interface.
+## Features
 
-## 🛠️ Tech Stack
+- **Rich Text Editor:** A powerful editor based on [Tiptap](https://tiptap.dev/).
+- **Real-time Collaboration:** See changes from other users instantly.
+- **Modern UI:** Clean and responsive interface built with Tailwind CSS and Framer Motion.
+- **Document Management:** Create, view, and manage your documents.
 
-| Component       | Technology                | Role                                                                   |
-| :-------------- | :------------------------ | :--------------------------------------------------------------------- |
-| **Framework**   | **React (Vite)**          | Fast development environment and component-based UI.                   |
-| **Language**    | **TypeScript**            | Ensures type safety for component props, state, and API communication. |
-| **Editor Core** | **Tiptap/ProseMirror**    | Headless, extensible editor framework for rich text input.             |
-| **Real-Time**   | **Yjs** / **y-websocket** | Client-side handling of Conflict-free Replicated Data Types (CRDTs).   |
-| **Routing**     | **React Router DOM**      | Handles client-side navigation (`/login`, `/dashboard`, `/doc/:id`).   |
-| **API Comm.**   | **Axios**                 | Authenticated HTTP client for REST API calls to `cowrite-server`.      |
+## Tech Stack
 
----
+- **Framework:** React
+- **Build Tool:** Vite
+- **Editor Framework:** Tiptap
+- **State Management/CRDT:** Yjs
+- **Styling:** Tailwind CSS
+- **Icons:** Lucide React
+- **Routing:** React Router DOM
+- **Testing:** Vitest & React Testing Library
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
-You must have the **`cowrite-server`** running on a separate terminal window, typically at `http://localhost:8080` (or similar).
+- Node.js (v18 or higher)
+- npm or yarn
+- Cowrite Server running locally (usually on port 3000)
 
-### Setup & Run
+### Installation
 
-1.  **Clone:** `git clone <client-repo-url> cowrite-client`
-2.  **Navigate:** `cd cowrite-client`
-3.  **Install Dependencies:** `npm install`
-4.  **Run Dev Server:** `npm run dev` (The app will typically run on `http://localhost:5173`).
+1.  Navigate to the client directory:
 
----
+    ```bash
+    cd cowrite-client
+    ```
 
-## 🔑 MVP Authentication & API Integration
+2.  Install dependencies:
 
-### 1. Context & Security
+    ```bash
+    npm install
+    ```
 
-The client manages session state via a **JWT** stored in `localStorage` and accessed via an **`AuthContext`**. All API calls to the backend are handled through an **Axios interceptor** that automatically attaches the JWT for authentication.
+3.  Set up environment variables:
+    Create a `.env` file in the root directory (optional if defaults work, but good practice):
+    ```env
+    VITE_API_URL=http://localhost:3000
+    VITE_WS_URL=ws://localhost:3000
+    ```
 
-### 2. Core Routes
+### Running the Application
 
-| Route        | Status  | Description                                                                             | Required Auth |
-| :----------- | :------ | :-------------------------------------------------------------------------------------- | :------------ |
-| `/login`     | Phase 2 | Handles user login. Sends credentials to `POST /api/auth/login`.                        | No            |
-| `/register`  | Phase 2 | Handles user registration. Sends credentials to `POST /api/auth/register`.              | No            |
-| `/dashboard` | Phase 2 | Lists user's documents and handles creation. Fetches data from `GET /api/documents`.    | Yes           |
-| `/doc/:id`   | Phase 3 | The main editor view. Fetches initial content and establishes **WebSocket** connection. | Yes           |
+- **Development Mode:**
 
----
+  ```bash
+  npm run dev
+  ```
 
-## 📝 Document Editor Flow (Phase 2 & 3)
+  Open [http://localhost:5173](http://localhost:5173) to view it in the browser.
 
-The document flow is broken down into two main parts:
+- **Build for Production:**
 
-### Phase 2: Static Editor
+  ```bash
+  npm run build
+  ```
 
-1.  User navigates to `/doc/:id`.
-2.  App fetches the document details and the initial **`yjs_state_blob`** from the REST API.
-3.  The **Tiptap** editor initializes with the content loaded from the server.
+- **Preview Production Build:**
+  ```bash
+  npm run preview
+  ```
 
-### Phase 3: Real-Time Collaboration
+### Testing
 
-1.  The `DocumentEditor` component establishes a **WebSocket** connection to `ws://server/doc/:id`.
-2.  The connection uses the **`y-websocket`** provider to link the local **Yjs Document (CRDT)** to the server's master state.
-3.  The Tiptap editor is bound to the Yjs document, enabling **instantaneous, conflict-free synchronization** across all connected users.
+Run the test suite:
+
+```bash
+npm test
+```
+
+## Project Structure
+
+- `src/components/editor`: Tiptap editor components and toolbar configuration.
+- `src/pages`: Main application pages (Dashboard, Login, Editor).
+- `src/context`: React context providers (AuthContext).
+- `src/api`: Axios configuration for API requests.
