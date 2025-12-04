@@ -2,6 +2,10 @@
 
 The frontend application for Cowrite, a modern real-time collaborative text editor. Built with React, Vite, and Tiptap.
 
+Here's a video demo
+
+https://www.youtube.com/watch?v=lJmM6SQlhzI
+
 ## Features
 
 - **Rich Text Editor:** A powerful editor based on [Tiptap](https://tiptap.dev/).
